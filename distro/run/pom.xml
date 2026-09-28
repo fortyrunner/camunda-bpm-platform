@@ -27,6 +27,10 @@
     <version.maven-surefire>3.6.0</version.maven-surefire>
     <!-- Spring Boot 4 is built on Jakarta EE 11 (Persistence 3.2, Servlet 6.1, JAX-RS 4.0). -->
     <version.jakarta-ee-spec>11.0.0</version.jakarta-ee-spec>
+    <!-- Spring Boot 4.1.1's BOM manages the tomcat-embed-* artifacts at 11.0.24, which has 3
+      CRITICAL auth-bypass CVEs (CVE-2026-65905, CVE-2026-65182, CVE-2026-68525), fixed in
+      11.0.25. No newer Spring Boot 4.1.x patch release exists yet to pick this up. -->
+    <version.tomcat.embed>11.0.26</version.tomcat.embed>
   </properties>
 
   <dependencyManagement>
@@ -38,6 +42,25 @@
         <version>${version.spring-boot}</version>
         <scope>import</scope>
         <type>pom</type>
+      </dependency>
+
+      <!-- A property override (e.g. tomcat.version) only propagates into an imported BOM's own
+        placeholders when that BOM is inherited via <parent>; spring-boot-dependencies is merely
+        imported above, so it must be overridden with explicit entries instead. -->
+      <dependency>
+        <groupId>org.apache.tomcat.embed</groupId>
+        <artifactId>tomcat-embed-core</artifactId>
+        <version>${version.tomcat.embed}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.tomcat.embed</groupId>
+        <artifactId>tomcat-embed-el</artifactId>
+        <version>${version.tomcat.embed}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.tomcat.embed</groupId>
+        <artifactId>tomcat-embed-websocket</artifactId>
+        <version>${version.tomcat.embed}</version>
       </dependency>
 
       <dependency>

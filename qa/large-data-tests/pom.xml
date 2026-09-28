@@ -37,7 +37,7 @@
     <dependency>
       <groupId>com.google.guava</groupId>
       <artifactId>guava</artifactId>
-      <version>28.2-jre</version>
+      <version>33.7.1-jre</version> <!-- was 28.2-jre; fixes CVE-2023-2976, CVE-2020-8908 -->
       <scope>test</scope>
     </dependency>
 

@@ -24,10 +24,10 @@
     <version.h2-v1>1.4.200</version.h2-v1><!-- used for instance migration qa -->
     <version.oracle>23.5.0.24.07</version.oracle>
     <version.mysql>8.3.0</version.mysql>
-    <version.sqlserver>8.4.1.jre8</version.sqlserver>
+    <version.sqlserver>13.6.0.jre11</version.sqlserver> <!-- was 8.4.1.jre8; fixes CVE-2025-59250. jre11 classifier needs Java 11+, already required here -->
     <version.db2-11.5>11.5.0.0</version.db2-11.5>
     <version.db2>${version.db2-11.5}</version.db2>
-    <version.postgresql>42.5.5</version.postgresql>
+    <version.postgresql>42.7.13</version.postgresql> <!-- was 42.5.5; fixes CVE-2026-42198 -->
     <version.liquibase>4.8.0</version.liquibase>
 
     <!-- needed for sql script and backward compatibility checks -->

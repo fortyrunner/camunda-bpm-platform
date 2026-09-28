@@ -60,7 +60,7 @@
       <dependency>
         <groupId>org.apache.commons</groupId>
         <artifactId>commons-lang3</artifactId>
-        <version>3.8.1</version>
+        <version>3.20.0</version> <!-- was 3.8.1; fixes CVE-2025-48924 -->
       </dependency>
       <dependency>
         <groupId>commons-io</groupId>
@@ -116,7 +116,7 @@
       <dependency>
         <groupId>org.apache.ant</groupId>
         <artifactId>ant</artifactId>
-        <version>1.7.1</version>
+        <version>1.10.18</version> <!-- was 1.7.1; fixes CVE-2020-11979, CVE-2020-1945, CVE-2021-36373 -->
         <scope>provided</scope>
       </dependency>
 
@@ -173,7 +173,7 @@
       <dependency>
         <groupId>org.xmlunit</groupId>
         <artifactId>xmlunit-core</artifactId>
-        <version>2.6.2</version>
+        <version>2.14.0</version> <!-- was 2.6.2; fixes CVE-2024-31573 -->
       </dependency>
 
       <dependency>
@@ -260,6 +260,16 @@
         <version>1.0.2.Final</version>
       </dependency>
 
+      <!-- Matches the Servlet level Tomcat 9.0.x (the last javax.servlet Tomcat line) actually
+        implements; the 3.0 spec above lacks methods like ServletContext.getVirtualServerName().
+        Not currently referenced by any module - kept managed here for whoever next needs an
+        embedded Tomcat 9 test container on the javax.servlet side. -->
+      <dependency>
+        <groupId>org.jboss.spec.javax.servlet</groupId>
+        <artifactId>jboss-servlet-api_4.0_spec</artifactId>
+        <version>2.0.0.Final</version>
+      </dependency>
+
       <dependency>
         <groupId>org.jboss.spec.javax.ws.rs</groupId>
         <artifactId>jboss-jaxrs-api_1.1_spec</artifactId>
@@ -326,10 +336,18 @@
         <version>2.0.0-M23</version>
       </dependency>
 
+      <!-- was org.python:jython:2.5.3; fixes CVE-2016-4000. Switched from the plain "jython"
+        artifact to "jython-standalone": Jython 2.7.x requires its Python standard library
+        (Lib/) to be resolvable via sys.path/python.home at runtime to import the "site" module,
+        which the plain jython jar does not bundle (it expects a co-located Lib/ directory on
+        disk); jython-standalone bundles the whole stdlib inside the jar, so it works regardless
+        of where Maven puts it. Verified: the plain jar throws "ImportError: Cannot import site
+        module" and JSR-223's ScriptEngineManager.getEngineByName("python") silently returns
+        null as a result. Trade-off: this jar is ~50MB vs. the old jar's ~8MB. -->
       <dependency>
         <groupId>org.python</groupId>
-        <artifactId>jython</artifactId>
-        <version>2.5.3</version>
+        <artifactId>jython-standalone</artifactId>
+        <version>2.7.4</version>
       </dependency>
 
       <dependency>

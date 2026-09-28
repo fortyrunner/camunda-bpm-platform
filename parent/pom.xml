@@ -21,7 +21,7 @@
   <properties>
     <version.quarkus>3.27.0</version.quarkus>
     <version.spring.framework>5.3.39</version.spring.framework>
-    <version.spring.framework6>6.2.10</version.spring.framework6>
+    <version.spring.framework6>6.2.19</version.spring.framework6> <!-- was 6.2.10; fixes CVE-2026-41854 -->
     <!-- Spring Framework 7, required by Spring Boot 4. Used by the modules that take part
       in the Spring Boot stack (engine-spring/core-6 and the spring-boot-starter tree). -->
     <version.spring.framework7>7.0.9</version.spring.framework7>
@@ -39,21 +39,29 @@
     <version.accessors-smart>2.5.2</version.accessors-smart>
     <version.gson>2.8.9</version.gson>
     <version.openjpa>2.4.3</version.openjpa>
-    <version.hibernate>5.6.5.Final</version.hibernate>
+    <version.hibernate>5.6.5.Final</version.hibernate> <!-- CVE-2026-0603 (SQLi) has no fix in the 5.x line (whole 5.2.8-5.6.15 range is affected); needs Hibernate 6.x, a deliberate migration -->
     <version.hikaricp>4.0.3</version.hikaricp>
-    <version.jackson>2.15.2</version.jackson>
+    <version.jackson>2.18.11</version.jackson> <!-- was 2.15.2; fixes CVE-2026-54512/-54513/-54514/-54515/-59888, CVE-2026-18401 -->
     <version.xml.bind-api>2.3.3</version.xml.bind-api>
     <version.xml.jaxb-impl>2.3.6</version.xml.jaxb-impl>
     <version.xml.jaxb-impl4>4.0.5</version.xml.jaxb-impl4>
     <version.jakarta.xml.bind-api>4.0.2</version.jakarta.xml.bind-api>
-    <version.httpclient5>5.4.3</version.httpclient5>
+    <version.httpclient5>5.6.4</version.httpclient5> <!-- was 5.4.3; fixes CVE-2026-64607 -->
     <version.httpcore5>5.3.4</version.httpcore5>
     <version.cronutils>9.2.1</version.cronutils>
 
     <version.slf4j>1.7.26</version.slf4j>
-    <version.logback>1.2.11</version.logback>
+    <version.logback>1.2.13</version.logback> <!-- was 1.2.11; fixes CVE-2023-6378. Staying on the 1.2.x line: 1.3.x+ needs SLF4J 2.x -->
     <version.junit>4.13.1</version.junit>
-    <version.assertj>2.9.1</version.assertj>
+    <version.assertj>2.9.1</version.assertj> <!-- CVE-2026-24400 fixed only at 3.27.7+ (no 2.x patch exists). Tried the
+      bump: it breaks source compilation of engine's test suite in multiple places (removed/changed
+      fluent-assertion methods, e.g. AbstractObjectAssert no longer has .contains(Object...) after
+      .extracting(String), and other "cannot find symbol"/"ambiguous method" errors across several
+      test files) - a genuine AssertJ 2-to-3 migration, not a version-property edit, and one that
+      would need auditing every one of the ~40 modules using this property, not just engine.
+      assertj-core is test/provided scope everywhere in this repo (verified: zero compile/runtime
+      usages), so this CVE has no production/shipped exposure; deferring the migration rather than
+      forcing it through here, same as version.hibernate and version.spring.framework above. -->
     <version.mockito>5.10.0</version.mockito>
     <version.wiremock>2.27.2</version.wiremock>
     <version.testcontainers>1.16.0</version.testcontainers>
@@ -69,13 +77,13 @@
     <version.wildfly26>26.0.1.Final</version.wildfly26>
     <version.wildfly26.core>18.0.4.Final</version.wildfly26.core>
 
-    <version.tomcat9>9.0.107</version.tomcat9>
-    <version.tomcat>10.1.43</version.tomcat>
+    <version.tomcat9>9.0.122</version.tomcat9> <!-- was 9.0.107; fixes CRITICAL CVE-2026-65905/-65182/-68525 and CVE-2026-43515/-43512. Used by qa/tomcat9-runtime. -->
+    <version.tomcat>10.1.60</version.tomcat> <!-- was 10.1.43; fixes CRITICAL CVE-2026-65905/-65182/-68525 (authn/authz bypass) and CVE-2026-43515/-43512 -->
 
     <version.arquillian>1.1.10.Final</version.arquillian>
     <version.shrinkwrap.resolvers>2.2.2</version.shrinkwrap.resolvers>
     <version.selenium>4.10.0</version.selenium>
-    <version.freemarker>2.3.31</version.freemarker>
+    <version.freemarker>2.3.35</version.freemarker> <!-- was 2.3.31; fixes CRITICAL CVE-2026-84939 (path traversal) -->
 
     <version.jboss-javaee-spec>3.0.2.Final</version.jboss-javaee-spec>
     <version.jakarta-ee-spec>10.0.0</version.jakarta-ee-spec>

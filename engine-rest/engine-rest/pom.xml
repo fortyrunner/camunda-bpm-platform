@@ -16,7 +16,21 @@
   </parent>
 
   <properties>
-    <!-- pin tomcat version for engine-rest -->
+    <!-- pin tomcat version for engine-rest's embedded test container.
+      Left at 7.0.50 (from 2013, has known CVEs incl. 3 CRITICAL auth-bypass ones fixed only in
+      9.0.121+/10.1.58+/11.0.25+) deliberately: TomcatServerBootstrap/JerseyTomcatServerBootstrap
+      (this module's ShrinkWrap-based embedded-container test harness) bundles Jersey into the
+      deployed WAR's WEB-INF/lib, duplicating the Jersey classes already on the surefire JVM's own
+      classpath (from this module's "jersey2" profile). Any Tomcat version change - even a same-
+      line patch bump to 7.0.109, let alone the javax.servlet-compatible 9.0.x line - changes
+      WebappClassLoader's isolation behavior enough to surface that duplication as a
+      ClassCastException on Jersey's ServiceLoader SPI classes (AutoDiscoverable,
+      InjectionManagerFactory), since the same class name then resolves to two distinct Class
+      objects. Confirmed by bisection: reproduces with only the version bump changed, nothing
+      else. Fixing it needs a rework of the harness (stop double-bundling Jersey, or force
+      parent-first classloader delegation), which is real follow-up work of its own, not a
+      version-property edit. This dependency is test-scope only and never ships in
+      camunda-engine-rest-core.jar, so the exposure is limited to this CI/local test run. -->
     <version.tomcat>7.0.50</version.tomcat>
     <rest.http.port>38080</rest.http.port>
     <javax.activation.version>1.1.1</javax.activation.version>
