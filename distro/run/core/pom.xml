@@ -118,6 +118,21 @@
       </exclusions>
     </dependency>
     
+    <!-- Spring Boot 4 split TestRestTemplate out of spring-boot-starter-test into its own
+      module; spring-boot-restclient supplies the RestTemplateBuilder its auto-configuration
+      needs. -->
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-resttestclient</artifactId>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-restclient</artifactId>
+      <scope>test</scope>
+    </dependency>
+
     <!-- Required to Run JUnit4 tests -->
     <dependency>
       <groupId>org.junit.vintage</groupId>

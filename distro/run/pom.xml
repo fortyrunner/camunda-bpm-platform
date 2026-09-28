@@ -18,6 +18,17 @@
   </description>
   <packaging>pom</packaging>
 
+  <properties>
+    <!-- Spring Boot 4 removed rest-assured from its BOM; keep the version Spring Boot 3.5
+      supplied so this upgrade does not also bump rest-assured across a major release. -->
+    <version.rest-assured>5.5.6</version.rest-assured>
+    <!-- Spring Boot 4 brings JUnit 6, whose platform the surefire/failsafe versions pinned by
+      camunda-parent (2.22.2/2.16) cannot launch. -->
+    <version.maven-surefire>3.6.0</version.maven-surefire>
+    <!-- Spring Boot 4 is built on Jakarta EE 11 (Persistence 3.2, Servlet 6.1, JAX-RS 4.0). -->
+    <version.jakarta-ee-spec>11.0.0</version.jakarta-ee-spec>
+  </properties>
+
   <dependencyManagement>
     <dependencies>
 
@@ -27,6 +38,12 @@
         <version>${version.spring-boot}</version>
         <scope>import</scope>
         <type>pom</type>
+      </dependency>
+
+      <dependency>
+        <groupId>io.rest-assured</groupId>
+        <artifactId>rest-assured</artifactId>
+        <version>${version.rest-assured}</version>
       </dependency>
 
       <dependency>
@@ -57,6 +74,23 @@
           <groupId>org.springframework.boot</groupId>
           <artifactId>spring-boot-maven-plugin</artifactId>
           <version>${version.spring-boot}</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-surefire-plugin</artifactId>
+          <version>${version.maven-surefire}</version>
+          <configuration>
+            <!-- camunda-parent asks for the 'hourly' run order, which surefire 3 dropped -->
+            <runOrder>filesystem</runOrder>
+          </configuration>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-failsafe-plugin</artifactId>
+          <version>${version.maven-surefire}</version>
+          <configuration>
+            <runOrder>filesystem</runOrder>
+          </configuration>
         </plugin>
       </plugins>
     </pluginManagement>

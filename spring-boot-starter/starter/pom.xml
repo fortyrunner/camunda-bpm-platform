@@ -72,6 +72,15 @@
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-autoconfigure</artifactId>
     </dependency>
+    <!-- Up to Spring Boot 3 the DataSource/DataSourceTransactionManager auto-configurations
+      lived in spring-boot-autoconfigure and so reached starter consumers transitively. Spring
+      Boot 4 moved them into this module, which has to be requested explicitly, otherwise
+      consumers that do not pull in a JDBC/JPA starter themselves end up without a
+      PlatformTransactionManager. -->
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-jdbc</artifactId>
+    </dependency>
     <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter</artifactId>

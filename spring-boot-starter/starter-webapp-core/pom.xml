@@ -57,6 +57,14 @@
       <scope>test</scope>
     </dependency>
 
+    <!-- Spring Boot 4 moved the DataSource auto-configurations out of
+         spring-boot-autoconfigure into this module, so it has to be requested explicitly. -->
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-jdbc</artifactId>
+      <scope>test</scope>
+    </dependency>
+
     <dependency>
       <groupId>com.h2database</groupId>
       <artifactId>h2</artifactId>
@@ -67,7 +75,6 @@
       <groupId>org.mockito</groupId>
       <artifactId>mockito-core</artifactId>
       <scope>test</scope>
-      <version>${version.mockito}</version>
     </dependency>
 
   </dependencies>

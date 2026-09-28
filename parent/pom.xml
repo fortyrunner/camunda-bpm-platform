@@ -22,7 +22,10 @@
     <version.quarkus>3.27.0</version.quarkus>
     <version.spring.framework>5.3.39</version.spring.framework>
     <version.spring.framework6>6.2.10</version.spring.framework6>
-    <version.spring-boot>3.5.5</version.spring-boot>
+    <!-- Spring Framework 7, required by Spring Boot 4. Used by the modules that take part
+      in the Spring Boot stack (engine-spring/core-6 and the spring-boot-starter tree). -->
+    <version.spring.framework7>7.0.9</version.spring.framework7>
+    <version.spring-boot>4.1.1</version.spring-boot>
     <version.resteasy>3.15.6.Final</version.resteasy>
     <version.jersey2>2.34</version.jersey2>
     <!-- use minimum version of resteasy and jersey -->

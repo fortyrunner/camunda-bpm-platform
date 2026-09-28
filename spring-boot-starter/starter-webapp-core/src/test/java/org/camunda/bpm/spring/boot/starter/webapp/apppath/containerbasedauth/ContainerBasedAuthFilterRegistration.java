@@ -17,16 +17,18 @@
 package org.camunda.bpm.spring.boot.starter.webapp.apppath.containerbasedauth;
 
 import org.camunda.bpm.webapp.impl.security.auth.ContainerBasedAuthenticationFilter;
-import org.springframework.boot.autoconfigure.security.SecurityProperties;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 
 import java.util.Collections;
 
 @Configuration
-@Order(SecurityProperties.BASIC_AUTH_ORDER - 15)
+// equivalent to Spring Boot's SecurityFilterProperties.BASIC_AUTH_ORDER - 15, without
+// putting Spring Security on the test classpath
+@Order(Ordered.LOWEST_PRECEDENCE - 20)
 public class ContainerBasedAuthFilterRegistration {
 
     @Bean

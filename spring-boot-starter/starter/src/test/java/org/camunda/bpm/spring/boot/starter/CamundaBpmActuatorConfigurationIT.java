@@ -16,19 +16,22 @@
  */
 package org.camunda.bpm.spring.boot.starter;
 
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import org.camunda.bpm.spring.boot.starter.test.nonpa.TestApplication;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.web.client.TestRestTemplate;
+import org.springframework.boot.resttestclient.TestRestTemplate;
+import org.springframework.boot.resttestclient.autoconfigure.AutoConfigureTestRestTemplate;
+import com.jayway.jsonpath.JsonPath;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit4.SpringRunner;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = { TestApplication.class }, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@AutoConfigureTestRestTemplate
 public class CamundaBpmActuatorConfigurationIT extends AbstractCamundaAutoConfigurationIT{
 
   @Autowired
@@ -37,13 +40,22 @@ public class CamundaBpmActuatorConfigurationIT extends AbstractCamundaAutoConfig
   @Test
   public void jobExecutorHealthIndicatorTest() {
     final String body = getHealthBody();
-    assertTrue("wrong body " + body, body.contains("jobExecutor\":{\"status\":\"UP\""));
+    assertThat(readHealth(body, "jobExecutor.status")).as("wrong body %s", body).isEqualTo("UP");
   }
 
   @Test
   public void processEngineHealthIndicatorTest() {
     final String body = getHealthBody();
-    assertTrue("wrong body " + body, body.contains("processEngine\":{\"status\":\"UP\",\"details\":{\"name\":\"testEngine\"}}"));
+    assertThat(readHealth(body, "processEngine.status")).as("wrong body %s", body).isEqualTo("UP");
+    assertThat(readHealth(body, "processEngine.details.name")).as("wrong body %s", body).isEqualTo("testEngine");
+  }
+
+  /**
+   * Reads a value out of the health response by path, so the assertions do not depend on the order
+   * in which the health details are serialized.
+   */
+  private String readHealth(String body, String path) {
+    return JsonPath.read(body, "$.components." + path);
   }
 
   private String getHealthBody() {

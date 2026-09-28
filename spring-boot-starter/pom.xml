@@ -19,6 +19,14 @@
     Note: 7.24.0 is the last community edition release published on Maven Central. This library will not receive any new versions or releases. However, if you are interested in extended maintenance you could look into our enterprise edition. Get in touch with us: https://camunda.com/contact/
   </description>
 
+  <properties>
+    <version.maven-surefire>3.6.0</version.maven-surefire>
+    <!-- Spring Boot 4 is built on Jakarta EE 11 (Persistence 3.2, Servlet 6.1, JAX-RS 4.0).
+      Hibernate 7 in particular needs Persistence 3.2. The rest of the platform stays on the
+      Jakarta EE 10 spec version set in camunda-parent. -->
+    <version.jakarta-ee-spec>11.0.0</version.jakarta-ee-spec>
+  </properties>
+
   <dependencyManagement>
     <dependencies>
       <dependency>
@@ -87,8 +95,6 @@
           <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-failsafe-plugin</artifactId>
-            <!-- 3.0.0-M3 provides support for Junit Jupiter tests -->
-            <version>3.0.0-M3</version>
             <executions>
               <execution>
                 <goals>
@@ -132,10 +138,24 @@
           <artifactId>spring-boot-maven-plugin</artifactId>
           <version>${version.spring-boot}</version>
         </plugin>
+        <!-- Spring Boot 4 brings JUnit 6, whose platform the surefire/failsafe versions
+          pinned by camunda-parent (2.22.2/2.16) cannot launch. Override them here so the
+          bump stays scoped to the Spring Boot modules. -->
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-surefire-plugin</artifactId>
+          <version>${version.maven-surefire}</version>
+          <configuration>
+            <!-- camunda-parent asks for the 'hourly' run order, which surefire 3 dropped -->
+            <runOrder>filesystem</runOrder>
+          </configuration>
+        </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-failsafe-plugin</artifactId>
+          <version>${version.maven-surefire}</version>
           <configuration>
+            <runOrder>filesystem</runOrder>
             <redirectTestOutputToFile>true</redirectTestOutputToFile>
             <trimStackTrace>false</trimStackTrace>
           </configuration>

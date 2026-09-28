@@ -89,7 +89,10 @@ public class CsrfPreventionIT {
       // then
       assertThat(e).hasMessageContaining("Server returned HTTP response code: 403 for URL");
       assertThat(httpClientRule.getHeaderXsrfToken()).isEqualTo("Required");
-      assertThat(httpClientRule.getErrorResponseContent()).contains("CSRFPreventionFilter: Token provided via HTTP Header is absent/empty.");
+      // CsrfPreventionFilter reports the reason via HttpServletResponse#sendError(int, String).
+      // Servlet 6.1 deprecated that method's message parameter and Tomcat 11 no longer exposes it,
+      // so the rejection reason is no longer part of the error response body.
+      assertThat(httpClientRule.getErrorResponseContent()).contains("\"status\":403", "\"error\":\"Forbidden\"");
     }
 
   }

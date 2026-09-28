@@ -15,6 +15,13 @@
     <version>7.24.0-SNAPSHOT</version>
   </parent>
 
+  <properties>
+    <!-- This module is consumed by the Spring Boot starter, so it builds against the Spring
+      Framework 7 that Spring Boot 4 requires. Spring 7's JPA support needs Jakarta Persistence
+      3.2, which is the Jakarta EE 11 spec level; the rest of the platform stays on EE 10. -->
+    <version.jakarta-ee-spec>11.0.0</version.jakarta-ee-spec>
+  </properties>
+
   <dependencyManagement>
     <dependencies>
 
@@ -37,7 +44,7 @@
       <dependency>
         <groupId>org.springframework</groupId>
         <artifactId>spring-framework-bom</artifactId>
-        <version>${version.spring.framework6}</version>
+        <version>${version.spring.framework7}</version>
         <type>pom</type>
         <scope>import</scope>
       </dependency>

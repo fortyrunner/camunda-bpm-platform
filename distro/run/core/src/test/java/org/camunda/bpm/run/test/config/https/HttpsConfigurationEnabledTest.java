@@ -23,7 +23,7 @@ import java.util.List;
 import org.camunda.bpm.run.CamundaBpmRun;
 import org.camunda.bpm.run.test.AbstractRestTest;
 import org.camunda.bpm.run.test.util.TestUtils;
-import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -43,8 +43,14 @@ public class HttpsConfigurationEnabledTest extends AbstractRestTest {
   @Rule
   public ExpectedException exceptionRule = ExpectedException.none();
 
-  @Before
-  public void init() throws Exception {
+  /**
+   * Installs the permissive SSLContext as the JVM default before the application context is
+   * created. The auto-configured TestRestTemplate is backed by the JDK HTTP client, which
+   * captures the default SSLContext when it is built, so setting it per test method would be
+   * too late to trust Camunda Run's self-signed certificate.
+   */
+  @BeforeClass
+  public static void trustSelfSignedCertificate() throws Exception {
     TestUtils.trustSelfSignedSSL();
   }
 
@@ -54,7 +60,7 @@ public class HttpsConfigurationEnabledTest extends AbstractRestTest {
     String url = "https://localhost:" + localPort + CONTEXT_PATH + "/task";
 
     // when
-    ResponseEntity<List> response = testRestTemplate.exchange(url, HttpMethod.GET, new HttpEntity<>(null), List.class);
+    ResponseEntity<List> response = testRestTemplate.exchange(url, HttpMethod.GET, HttpEntity.EMPTY, List.class);
 
     // then
     assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
@@ -70,6 +76,6 @@ public class HttpsConfigurationEnabledTest extends AbstractRestTest {
     exceptionRule.expectMessage("I/O error on GET request for \"http://localhost:8080/engine-rest/task\":");
 
     // then
-    ResponseEntity<String> response = testRestTemplate.exchange(url, HttpMethod.GET, new HttpEntity<>(null), String.class);
+    ResponseEntity<String> response = testRestTemplate.exchange(url, HttpMethod.GET, HttpEntity.EMPTY, String.class);
   }
 }
