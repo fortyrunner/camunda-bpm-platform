@@ -71,7 +71,8 @@ public class ScriptBindings implements Bindings {
       "JSON", // Spin Internal Variable
       ScriptEngine.ARGV, // jRuby is only setting this variable and execution instead of exporting any other variables
       "execution",
-      "__doc__" // do not export python doc string
+      "__doc__", // do not export python doc string
+      "__builtins__" // do not export python builtins module (set by Jython 2.7+)
       ));
 
   protected List<Resolver> scriptResolvers;
